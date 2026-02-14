@@ -1,0 +1,25 @@
+// Anonymous Addiction Recovery Tracker (Basic MVP)
+// SPDX-License-Identifier: Apache-2.0
+
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+// public state
+export ledger threshold: u16;
+export ledger verified_count: Counter;
+
+// initialize threshold
+export circuit init(t: u16): [] {
+  threshold = t;
+}
+
+// verify sobriety streak using ZK proof
+export circuit verify_streak(sober_days: u16): [] {
+
+  // enforce privacy-preserving rule
+  require(sober_days >= threshold);
+
+  // count successful verifications
+  verified_count.increment(1);
+}
