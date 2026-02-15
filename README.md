@@ -18,7 +18,7 @@ The **Anonymous Addiction Recovery Tracker** solves the dilemma of needing commu
 *(Note: Check `counter-contract/deployment.json` for the most recent deployment address)*
 ---
 ## 🛠️ Project Structure
-- **`counter-contract`**: The Midnight compact smart contract (`addiction.compact`) and deployment scripts.
+- **`-contract`**: The Midnight compact smart contract (`addiction.compact`) and deployment scripts.
 - **`counter-cli`**: Command-line interface for interacting with the contract.
 - **`frontend-vite-react`**: (In Progress) Web dashboard for users.
 ## ⚡ Quick Start
@@ -45,5 +45,7 @@ The contract defines a circuit `verify_streak` that:
   <sub>Built with ❤️ on Midnight Network</sub>
 </div>
 ## UI Screenshot
-![Anonymous Addiction Recovery Tracker UI](https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/images/recovery-tracker-ui.png)
+## UI Screenshot
+
+![Anonymous Addiction Recovery Tracker UI](docs/images/recovery-tracker-ui.png)
 
