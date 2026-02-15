@@ -18,7 +18,7 @@ The **Anonymous Addiction Recovery Tracker** solves the dilemma of needing commu
 *(Note: Check `counter-contract/deployment.json` for the most recent deployment address)*
 ---
 ## 🛠️ Project Structure
-- **`counter-contract`**: The Midnight compact smart contract (`addiction.compact`) and deployment scripts.
+- **`-contract`**: The Midnight compact smart contract (`addiction.compact`) and deployment scripts.
 - **`counter-cli`**: Command-line interface for interacting with the contract.
 - **`frontend-vite-react`**: (In Progress) Web dashboard for users.
 ## ⚡ Quick Start
