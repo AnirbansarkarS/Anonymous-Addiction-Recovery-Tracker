@@ -6,7 +6,8 @@
   "workspaces": [
     "counter-cli",
     "counter-contract",
-    "frontend-vite-react"
+    "frontend-vite-react",
+    "frontend-html"
   ],
   "scripts": {
     "compact": "turbo run compact",

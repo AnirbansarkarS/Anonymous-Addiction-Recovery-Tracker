@@ -1,0 +1,210 @@
+circuit AddictionRecoveryEnhanced;
+
+// SPDX-License-Identifier: Apache-2.0
+// Anonymous Addiction Recovery Tracker - Enhanced Version
+// Privacy-preserving sobriety verification with milestones and anonymous tracking
+
+// ============================================================================
+// PUBLIC STATE (visible on ledger)
+// ============================================================================
+
+// Milestone thresholds
+public ledger bronze_threshold: Unsigned(16);   // e.g., 7 days
+public ledger silver_threshold: Unsigned(16);   // e.g., 30 days
+public ledger gold_threshold: Unsigned(16);     // e.g., 90 days
+
+// Verification counters by milestone level
+public ledger bronze_verifications: Unsigned(32);
+public ledger silver_verifications: Unsigned(32);
+public ledger gold_verifications: Unsigned(32);
+
+// Total unique users who have verified
+public ledger total_users: Unsigned(32);
+
+// Privacy-preserving leaderboard (stores anonymous user IDs and their highest milestone)
+public ledger leaderboard_size: Unsigned(16);
+
+// ============================================================================
+// WITNESS STATE (private, per-user data)
+// ============================================================================
+
+witness user_id: Unsigned(64);           // Anonymous user identifier
+witness last_verification: Unsigned(64); // Timestamp of last verification
+witness highest_milestone: Unsigned(8);  // 0=none, 1=bronze, 2=silver, 3=gold
+witness total_verifications: Unsigned(32); // User's total verification count
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+export function init(
+  bronze: Unsigned(16),
+  silver: Unsigned(16),
+  gold: Unsigned(16)
+): Void {
+  // Set milestone thresholds
+  bronze_threshold = bronze;
+  silver_threshold = silver;
+  gold_threshold = gold;
+  
+  // Initialize counters
+  bronze_verifications = 0;
+  silver_verifications = 0;
+  gold_verifications = 0;
+  total_users = 0;
+  leaderboard_size = 0;
+}
+
+// ============================================================================
+// CORE VERIFICATION FUNCTION
+// ============================================================================
+
+export function verify_streak(
+  private sober_days: Unsigned(16),
+  private user_anonymous_id: Unsigned(64),
+  private current_timestamp: Unsigned(64)
+): Void {
+  // Determine which milestone was achieved (privately)
+  let milestone_level: Unsigned(8) = 0;
+  
+  if sober_days >= gold_threshold {
+    milestone_level = 3;
+    gold_verifications = gold_verifications + 1;
+  } else if sober_days >= silver_threshold {
+    milestone_level = 2;
+    silver_verifications = silver_verifications + 1;
+  } else if sober_days >= bronze_threshold {
+    milestone_level = 1;
+    bronze_verifications = bronze_verifications + 1;
+  } else {
+    // Streak not long enough for any milestone
+    assert(false); // Reject verification
+  };
+  
+  // Update user's private state
+  let is_new_user: Boolean = (user_id == 0);
+  
+  user_id = user_anonymous_id;
+  last_verification = current_timestamp;
+  
+  // Update highest milestone if improved
+  if milestone_level > highest_milestone {
+    highest_milestone = milestone_level;
+  };
+  
+  total_verifications = total_verifications + 1;
+  
+  // Increment unique user count if this is their first verification
+  if is_new_user {
+    total_users = total_users + 1;
+  };
+}
+
+// ============================================================================
+// QUICK VERIFICATION (Single Threshold)
+// ============================================================================
+
+export function quick_verify(
+  private sober_days: Unsigned(16),
+  threshold: Unsigned(16)
+): Void {
+  // Simple verification against a custom threshold
+  assert(sober_days >= threshold);
+  
+  // Increment bronze counter for tracking
+  bronze_verifications = bronze_verifications + 1;
+}
+
+// ============================================================================
+// STREAK RESET (User voluntarily resets their streak)
+// ============================================================================
+
+export function reset_streak(
+  private user_anonymous_id: Unsigned(64)
+): Void {
+  // Verify this is the correct user
+  assert(user_id == user_anonymous_id);
+  
+  // Reset user's private state
+  highest_milestone = 0;
+  last_verification = 0;
+  // Keep user_id and total_verifications for history
+}
+
+// ============================================================================
+// MILESTONE ACHIEVEMENT CHECK
+// ============================================================================
+
+export function check_milestone(
+  private sober_days: Unsigned(16),
+  target_milestone: Unsigned(8)
+): Boolean {
+  // Returns true if sober_days qualifies for target milestone
+  // Without revealing the exact number of days
+  
+  if target_milestone == 3 {
+    sober_days >= gold_threshold
+  } else if target_milestone == 2 {
+    sober_days >= silver_threshold
+  } else if target_milestone == 1 {
+    sober_days >= bronze_threshold
+  } else {
+    false
+  }
+}
+
+// ============================================================================
+// QUERY FUNCTIONS (Public reads)
+// ============================================================================
+
+export query function get_bronze_threshold(): Unsigned(16) {
+  bronze_threshold
+}
+
+export query function get_silver_threshold(): Unsigned(16) {
+  silver_threshold
+}
+
+export query function get_gold_threshold(): Unsigned(16) {
+  gold_threshold
+}
+
+export query function get_bronze_count(): Unsigned(32) {
+  bronze_verifications
+}
+
+export query function get_silver_count(): Unsigned(32) {
+  silver_verifications
+}
+
+export query function get_gold_count(): Unsigned(32) {
+  gold_verifications
+}
+
+export query function get_total_verifications(): Unsigned(32) {
+  bronze_verifications + silver_verifications + gold_verifications
+}
+
+export query function get_total_users(): Unsigned(32) {
+  total_users
+}
+
+export query function get_leaderboard_size(): Unsigned(16) {
+  leaderboard_size
+}
+
+// ============================================================================
+// PRIVATE QUERY FUNCTIONS (User can check their own private state)
+// ============================================================================
+
+export query function my_highest_milestone(): Unsigned(8) {
+  highest_milestone
+}
+
+export query function my_total_verifications(): Unsigned(32) {
+  total_verifications
+}
+
+export query function my_last_verification(): Unsigned(64) {
+  last_verification
+}

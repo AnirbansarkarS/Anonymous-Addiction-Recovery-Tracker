@@ -1,0 +1,73 @@
+// Anonymous Addiction Recovery Tracker
+// SPDX-License-Identifier: Apache-2.0
+
+circuit AddictionRecovery;
+
+// ============================================================================
+// LEDGER (Public State)
+// ============================================================================
+
+ledger AddictionLedger {
+  // Minimum sobriety threshold required (in days)
+  min_threshold: Unsigned(16);
+  
+  // Count of successful anonymous recovery proofs
+  verified_recoveries: Counter;
+}
+
+// ============================================================================
+// CONSTRUCTOR - Initialize the contract
+// ============================================================================
+
+export circuit constructor(threshold: Unsigned(16)): Void {
+  ledger.min_threshold = threshold;
+  ledger.verified_recoveries.reset();
+}
+
+// ============================================================================
+// WITNESSES (Private Functions - Access Off-Chain Data)
+// ============================================================================
+
+// Witness to get user's private sober days count
+// This is implemented in TypeScript and keeps data off-chain
+witness get_private_sober_days(): Unsigned(16);
+
+// ============================================================================
+// MAIN CIRCUIT - Submit Anonymous Sobriety Proof
+// ============================================================================
+
+export circuit submit_proof(): Void {
+  // Get the user's private sober days (stays off-chain)
+  const private_days: Unsigned(16) = get_private_sober_days();
+  
+  // Get the public threshold from ledger
+  const threshold: Unsigned(16) = ledger.min_threshold;
+  
+  // Zero-knowledge constraint: prove sober_days >= threshold
+  // This generates a ZK proof without revealing the exact number
+  assert(private_days >= threshold, "Sobriety threshold not met");
+  
+  // Record the successful anonymous recovery proof
+  ledger.verified_recoveries.increment(1);
+}
+
+// ============================================================================
+// QUERY FUNCTIONS (Read Public State)
+// ============================================================================
+
+export circuit get_threshold(): Unsigned(16) {
+  ledger.min_threshold
+}
+
+export circuit get_verified_count(): Unsigned(64) {
+  ledger.verified_recoveries.value()
+}
+
+// ============================================================================
+// OPTIONAL: Update threshold (governance function)
+// ============================================================================
+
+export circuit update_threshold(new_threshold: Unsigned(16)): Void {
+  assert(new_threshold > 0, "Threshold must be positive");
+  ledger.min_threshold = new_threshold;
+}

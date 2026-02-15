@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "npm run copy-contract-keys && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "copy-contract-keys": "mkdir -p ./public/midnight/counter/keys && mkdir -p ./public/midnight/counter/zkir && cp -r ../counter-contract/src/managed/counter/keys/* ./public/midnight/counter/keys && cp -r ../counter-contract/src/managed/counter/zkir/* ./public/midnight/counter/zkir"
+    "copy-contract-keys": "mkdir -p ./public/midnight/counter/keys && mkdir -p ./public/midnight/counter/zkir && cp -r ../addiction-contract/src/managed/counter/keys/* ./public/midnight/counter/keys && cp -r ../addiction-contract/src/managed/counter/zkir/* ./public/midnight/counter/zkir"
   },
   "dependencies": {
     "@eddalabs/counter-contract": "*",
@@ -49,3 +49,4 @@
     "vite-plugin-wasm": "^3.4.1"
   }
 }
+

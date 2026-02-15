@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anonymous Addiction Recovery Tracker</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>Anonymous Addiction Recovery Tracker</h1>
+        <p class="subtitle">Zero-knowledge proof of sobriety on Midnight Network</p>
+      </header>
+
+      <main>
+        <div class="card">
+          <div id="wallet-section">
+            <button id="connect-btn" class="primary-btn">Connect Lace Wallet</button>
+            <p id="wallet-status" class="status-text hidden">Not connected</p>
+          </div>
+
+          <div id="contract-section" class="hidden">
+            <div class="stats-container">
+              <div class="stat-box">
+                <span class="stat-label">Sobriety Days</span>
+                <span id="sobriety-count" class="stat-value">-</span>
+              </div>
+            </div>
+
+            <div class="action-container">
+              <button id="log-day-btn" class="action-btn">Log Sober Day</button>
+              <p id="action-status" class="status-text small"></p>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <footer>
+        <p>Powered by Midnight Network • Privacy Preserved</p>
+      </footer>
+    </div>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

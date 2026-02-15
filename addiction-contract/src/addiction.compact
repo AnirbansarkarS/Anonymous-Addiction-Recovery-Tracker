@@ -1,25 +1,50 @@
-// Anonymous Addiction Recovery Tracker (Basic MVP)
+// This file is part of midnightntwrk/confidential-merger-board
+// Copyright (C) 2025 Midnight Foundation
 // SPDX-License-Identifier: Apache-2.0
+// Licensed under the Apache License, Version 2.0 (the "License");
+// You may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-// public state
-export ledger threshold: u16;
-export ledger verified_count: Counter;
+// Public state tracks active negotiations
+export ledger negotiations: Counter;
 
-// initialize threshold
-export circuit init(t: u16): [] {
-  threshold = t;
+// Private witness: company's confidential financial data
+witness private_revenue: field;
+witness private_assets: field;
+witness private_liabilities: field;
+
+// Public input: minimum thresholds for deal qualification
+public_input min_revenue_threshold: field;
+public_input min_asset_threshold: field;
+
+// Transition function: Prove financial qualification WITHOUT revealing actual numbers
+export circuit submit_qualification(): [] {
+    // ZK Proof: Company proves revenue exceeds threshold without revealing exact amount
+    assert(private_revenue >= min_revenue_threshold);
+    
+    // ZK Proof: Company proves assets exceed threshold without revealing exact amount
+    assert(private_assets >= min_asset_threshold);
+    
+    // ZK Proof: Company proves they are solvent (assets > liabilities)
+    assert(private_assets > private_liabilities);
+    
+    // Record that a qualified submission was made (publicly visible)
+    negotiations.increment(1);
 }
 
-// verify sobriety streak using ZK proof
-export circuit verify_streak(sober_days: u16): [] {
-
-  // enforce privacy-preserving rule
-  require(sober_days >= threshold);
-
-  // count successful verifications
-  verified_count.increment(1);
+// Transition function: Simple counter check for number of qualified parties
+export circuit get_qualified_count(): field {
+    return negotiations.value();
 }

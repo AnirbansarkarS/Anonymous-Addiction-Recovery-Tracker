@@ -2,13 +2,17 @@
   "name": "@eddalabs/counter-contract",
   "version": "0.1.0",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "scripts": {
-    "compile": "compact compile src/counter.compact src/managed/counter",
-    "compile:voting": "compact compile src/voting.compact src/managed/voting",
-    "compile:addiction": "compact compile src/addiction.compact src/managed/addiction",
-    "build": "npm run compile:addiction && tsc",
-    "deploy": "npm run build && node dist/deploy.js",
+    "compile": "compact compile src/addiction.compact src/managed/addiction",
+    "build": "tsc",
+    "deploy": "node dist/deploy.js",
     "deploy:voting": "node dist/deploy-voting.js"
+    
   },
   "dependencies": {
     "@midnight-ntwrk/compact-js": "2.4.0",
