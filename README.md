@@ -45,5 +45,5 @@ The contract defines a circuit `verify_streak` that:
   <sub>Built with ❤️ on Midnight Network</sub>
 </div>
 ## UI Screenshot
-![Anonymous Addiction Recovery Tracker UI](https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/images/recovery-tracker-ui.png)
+![Anonymous Addiction Recovery Tracker UI](https://raw.githubusercontent.com/AnirbansarkarS/Anonymous-Addiction-Recovery-Tracker/main/docs/images/recovery-tracker-ui.png)
 
